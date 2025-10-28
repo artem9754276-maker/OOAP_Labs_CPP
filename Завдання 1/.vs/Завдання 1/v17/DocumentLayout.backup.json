@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\NLTU\\3 \u043A\u0443\u0440\u0441\\OOAP\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C89AEB4C-8448-4E9B-B80B-4090BD5015F2}|\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.vcxproj|D:\\NLTU\\3 \u043A\u0443\u0440\u0441\\OOAP\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{C89AEB4C-8448-4E9B-B80B-4090BD5015F2}|\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.vcxproj|solutionrelative:\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp",
+              "DocumentMoniker": "D:\\NLTU\\3 \u043A\u0443\u0440\u0441\\OOAP\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp",
+              "RelativeDocumentMoniker": "\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp",
+              "ToolTip": "D:\\NLTU\\3 \u043A\u0443\u0440\u0441\\OOAP\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp",
+              "RelativeToolTip": "\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1\\\u0417\u0430\u0432\u0434\u0430\u043D\u043D\u044F 1.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIMAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-10-27T17:55:52.339Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

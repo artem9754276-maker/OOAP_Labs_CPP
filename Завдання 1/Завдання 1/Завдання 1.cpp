@@ -1,0 +1,139 @@
+﻿#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// ІНТЕРФЕЙС IADDRESSABLE
+// Інтерфейс задає "контракт" — які методи повинні бути реалізовані у класі.
+// Це дозволяє Notebook працювати з будь-яким класом, який має методи setAddress і showAddress.
+class IAddressable {
+public:
+    virtual void setAddress(const string& city, const string& street, int house) = 0; // метод для встановлення адреси
+    virtual void showAddress() const = 0; // метод для відображення адреси
+    virtual ~IAddressable() {} // віртуальний деструктор для коректного видалення об'єктів через покажчик
+};
+
+// КЛАС ДЕЛЕГАТ ADDRESS
+// Клас, який зберігає інформацію про адресу.
+// Відповідає за зміну і відображення адреси. Інші класи не втручаються в його внутрішню логіку.
+class Address {
+private:
+    string city;
+    string street;
+    int house;
+public:
+    // Конструктор із параметрами (всі значення за замовчуванням — порожні)
+    Address(const string& city = "", const string& street = "", int house = 0)
+        : city(city), street(street), house(house) {
+    }
+
+    // Методи встановлення значень (сетери)
+    void setCity(const string& c) { city = c; }
+    void setStreet(const string& s) { street = s; }
+    void setHouse(int h) { house = h; }
+
+    // Метод для зчитування повної адреси як одного рядка
+    string getFullAddress() const {
+        return city + ", вул. " + street + ", буд. " + to_string(house);
+    }
+
+    // Метод для виводу адреси у консоль
+    void show() const {
+        cout << "Місто: " << city << ", Вулиця: " << street << ", Будинок: " << house << endl;
+    }
+};
+
+// КЛАС PERSON
+// Реалізує інтерфейс IAddressable, тому може взаємодіяти з класом Notebook.
+// Клас делегує роботу з адресою об'єкту Address (використання патерну Delegation).
+class Person : public IAddressable {
+private:
+    string name;
+    string phone;
+    Address address; // об'єкт-делегат для керування адресою
+public:
+    // Конструктор із параметрами
+    Person(const string& name, const string& phone, const Address& addr)
+        : name(name), phone(phone), address(addr) {
+    }
+
+    // Реалізація методу з інтерфейсу (делегує встановлення адреси)
+    void setAddress(const string& city, const string& street, int house) override {
+        address.setCity(city);
+        address.setStreet(street);
+        address.setHouse(house);
+    }
+
+    // Реалізація методу з інтерфейсу (делегує показ адреси)
+    void showAddress() const override {
+        cout << "Адреса: ";
+        address.show();
+    }
+
+    // Вивід повної інформації про особу
+    void showPerson() const {
+        cout << "Ім'я: " << name << endl;
+        cout << "Телефон: " << phone << endl;
+        showAddress();
+        cout << "-----------------------------" << endl;
+    }
+
+    // Гетери
+    string getName() const { return name; }
+    string getPhone() const { return phone; }
+    string getAddressString() const { return address.getFullAddress(); }
+};
+
+// КЛАС NOTEBOOK
+// Виступає головним контейнером (записною книжкою).
+// Містить колекцію об'єктів, які реалізують інтерфейс IAddressable.
+class Notebook {
+private:
+    vector<IAddressable*> records; // зберігає покажчики на об'єкти, що реалізують IAddressable
+public:
+    // Додавання нового запису
+    void addRecord(IAddressable* record) {
+        records.push_back(record);
+    }
+
+    // Відображення всіх записів у книжці
+    void showAll() const {
+        cout << "=== Вміст записної книжки ===" << endl;
+        for (auto r : records)
+            r->showAddress(); // поліморфний виклик методу з інтерфейсу
+    }
+};
+
+int main() {
+    setlocale(LC_ALL, "UKRAINIAN");
+    // Створення адрес (делегати)
+    Address a1("Львів", "Зелена", 12);
+    Address a2("Київ", "Хрещатик", 5);
+
+    // Створення осіб з іменами, телефонами та адресами
+    Person p1("Андрій", "+380981234567", a1);
+    Person p2("Марія", "+380671112233", a2);
+
+    // Створення записної книжки
+    Notebook nb;
+
+    // Додавання записів у книжку (через інтерфейс)
+    nb.addRecord(&p1);
+    nb.addRecord(&p2);
+
+    // Виведення початкової інформації
+    cout << "=== Початкові дані ===" << endl;
+    p1.showPerson();
+    p2.showPerson();
+
+    // Зміна адреси для одного користувача (демонстрація делегування)
+    cout << "\n=== Після зміни адреси Андрія ===" << endl;
+    p1.setAddress("Одеса", "Дерибасівська", 8);
+    p1.showPerson();
+
+    // Вивід усіх записів у книжці (демонстрація роботи інтерфейсу)
+    cout << "\n=== Перевірка роботи Notebook через інтерфейс ===" << endl;
+    nb.showAll();
+
+    return 0;
+}
