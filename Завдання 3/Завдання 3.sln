@@ -1,31 +1,159 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36616.10 d17.14
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Завдання 3", "Завдання 3\Завдання 3.vcxproj", "{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Debug|x64.ActiveCfg = Debug|x64
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Debug|x64.Build.0 = Debug|x64
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Debug|x86.ActiveCfg = Debug|Win32
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Debug|x86.Build.0 = Debug|Win32
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Release|x64.ActiveCfg = Release|x64
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Release|x64.Build.0 = Release|x64
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Release|x86.ActiveCfg = Release|Win32
-		{FCDDE04E-2B7A-42EB-9908-1BD2A4DAED33}.Release|x86.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A1AFD16D-99AD-4269-B171-21CC3AC5D560}
-	EndGlobalSection
-EndGlobal
+#include <iostream>
+#include <vector>
+#include <string>
+#include <memory>
+#include <fstream>
+using namespace std;
+
+// ===============================================
+//     ПРОТОТИП: ОБЛІК КІМНАТ У ГУРТОЖИТКУ
+// ===============================================
+
+// ===== КЛАС Resident (мешканець) =====
+class Resident {
+private:
+    string name;
+    string birthDate;
+    string faculty;
+    string group;
+    string form;  // (державне / контракт)
+public:
+    Resident(string n = "", string b = "", string f = "", string g = "", string fm = "")
+        : name(n), birthDate(b), faculty(f), group(g), form(fm) {
+    }
+
+    void show() const {
+        cout << "  ПІБ: " << name << endl
+            << "  Дата народження: " << birthDate << endl
+            << "  Факультет: " << faculty << endl
+            << "  Група: " << group << endl
+            << "  Форма навчання: " << form << endl;
+    }
+
+    string toString() const {
+        return "ПІБ: " + name + "\nДата народження: " + birthDate +
+            "\nФакультет: " + faculty + "\nГрупа: " + group +
+            "\nФорма навчання: " + form + "\n";
+    }
+};
+
+//АБСТРАКТНИЙ ПРОТОТИП Room
+class Room {
+protected:
+    string type; // тип кімнати
+    vector<Resident> residents;
+public:
+    virtual ~Room() {}
+    virtual unique_ptr<Room> clone() const = 0; // метод клонування (Prototype)
+    virtual void addResident(const Resident& r) { residents.push_back(r); }
+
+    virtual void showInfo() const {
+        cout << "Тип кімнати: " << type << endl;
+        cout << "Кількість мешканців: " << residents.size() << endl;
+        for (size_t i = 0; i < residents.size(); ++i) {
+            cout << "\n-- Мешканець " << i + 1 << " --" << endl;
+            residents[i].show();
+        }
+    }
+
+    virtual string toString() const {
+        string info = "Тип кімнати: " + type + "\n";
+        info += "Кількість мешканців: " + to_string(residents.size()) + "\n";
+        for (size_t i = 0; i < residents.size(); ++i) {
+            info += "\n-- Мешканець " + to_string(i + 1) + " --\n";
+            info += residents[i].toString();
+        }
+        info += "===============================\n";
+        return info;
+    }
+};
+
+//  Конкретний прототип: двомісна кімната 
+class DoubleRoom : public Room {
+public:
+    DoubleRoom() { type = "Двомісна"; }
+    DoubleRoom(const DoubleRoom& other) { *this = other; } // копіювання
+
+    unique_ptr<Room> clone() const override {
+        return make_unique<DoubleRoom>(*this);
+    }
+};
+
+// Конкретний прототип: тримісна кімната 
+class TripleRoom : public Room {
+public:
+    TripleRoom() { type = "Тримісна"; }
+    TripleRoom(const TripleRoom& other) { *this = other; }
+
+    unique_ptr<Room> clone() const override {
+        return make_unique<TripleRoom>(*this);
+    }
+};
+
+//Клас Hostel (контейнер для кімнат)
+class Hostel {
+private:
+    vector<unique_ptr<Room>> rooms;
+public:
+    void addRoom(unique_ptr<Room> room) {
+        rooms.push_back(move(room));
+    }
+
+    void showAll() const {
+        cout << "=== ІНФОРМАЦІЯ ПРО ВСІ КІМНАТИ ===" << endl;
+        for (const auto& r : rooms) {
+            r->showInfo();
+            cout << "-------------------------------\n";
+        }
+    }
+
+    void generateReport(const string& filename) const {
+        ofstream out(filename);
+        if (!out) {
+            cerr << "Помилка відкриття файлу!" << endl;
+            return;
+        }
+        for (const auto& r : rooms)
+            out << r->toString();
+        out.close();
+        cout << "Звіт збережено у файлі: " << filename << endl;
+    }
+};
+
+// ===== MAIN =====
+int main() {
+	setlocale(LC_ALL, "UKRAINIAN");
+    // Створюємо прототипи кімнат
+    DoubleRoom doubleProto;
+    TripleRoom tripleProto;
+
+    // Створюємо об'єкт гуртожитку
+    Hostel hostel;
+
+    // --- Кімната 1 (на основі двомісного прототипу) ---
+    auto room1 = doubleProto.clone();
+    room1->addResident(Resident("Мартиненко Іван", "2006-04-21", "ІТ", "КНз-31", "державна"));
+    room1->addResident(Resident("Мартиненко Марія", "2006-04-21", "ІТ", "КНз-31", "контракт"));
+    hostel.addRoom(move(room1));
+
+    // --- Кімната 2 (на основі тримісного прототипу) ---
+    auto room2 = tripleProto.clone();
+    room2->addResident(Resident("Сидоренко Олег", "2004-12-10", "Лісове господарство", "ЛГ-11", "державна"));
+    room2->addResident(Resident("Білик Анна", "2008-07-05", "Лісове господарство", "ЛГ-11", "контракт"));
+    room2->addResident(Resident("Демчук Павло", "2008-10-09", "Лісове господарство", "ЛГ-11", "державна"));
+    hostel.addRoom(move(room2));
+
+    // --- Кімната 3 (ще один клон двомісної) ---
+    auto room3 = doubleProto.clone();
+    room3->addResident(Resident("Коваль Юлія", "2008-03-03", "Психологія", "ПС-12", "контракт"));
+    room3->addResident(Resident("Гринюк Назар", "2008-06-20", "Психологія", "ПС-12", "контракт"));
+    hostel.addRoom(move(room3));
+
+    // Виведення інформації у консоль
+    hostel.showAll();
+
+    // Формування текстового звіту
+    hostel.generateReport("HostelReport.txt");
+
+    return 0;
+}
